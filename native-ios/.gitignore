@@ -1,0 +1,11 @@
+# OSX
+.DS_Store
+
+build/
+DerivedData/
+xcuserdata/
+*.xcuserstate
+*.xccheckout
+*.moved-aside
+*.hmap
+*.ipa
