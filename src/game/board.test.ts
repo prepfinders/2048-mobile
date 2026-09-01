@@ -1,4 +1,5 @@
 import { getEmptyCells, moveBoard, slideAndMergeLine, spawnTile } from './board';
+import { directionFromDelta } from './swipe';
 import { applyMove, createGameFromBoard, createNewGame, undoMove } from './engine';
 
 describe('slideAndMergeLine', () => {
@@ -165,6 +166,16 @@ describe('createNewGame', () => {
     expect(game.moves).toBe(0);
     expect(game.bestScore).toBe(99);
     expect(game.tiles.every((tile) => tile.value === 2 || tile.value === 4)).toBe(true);
+  });
+});
+
+describe('directionFromDelta', () => {
+  it('maps swipe deltas to the four directions', () => {
+    expect(directionFromDelta(40, 8)).toBe('right');
+    expect(directionFromDelta(-40, 8)).toBe('left');
+    expect(directionFromDelta(8, 40)).toBe('down');
+    expect(directionFromDelta(8, -40)).toBe('up');
+    expect(directionFromDelta(10, 10)).toBeNull();
   });
 });
 

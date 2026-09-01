@@ -1,5 +1,5 @@
 import { useEffect, useRef, type ReactNode } from 'react';
-import { Animated, Easing, StyleSheet, Text, View } from 'react-native';
+import { Animated, Easing, Platform, StyleSheet, Text, View } from 'react-native';
 
 import type { GhostTile, Tile } from '../game/types';
 import { palette, tileAppearance } from '../theme/colors';
@@ -102,7 +102,7 @@ function AnimatedTile({
       toValue: { x: toX, y: toY },
       duration: 115,
       easing: Easing.out(Easing.cubic),
-      useNativeDriver: true,
+      useNativeDriver: Platform.OS !== 'web',
     }).start();
   }, [toX, toY, fadeOut, translate]);
 
@@ -114,7 +114,7 @@ function AnimatedTile({
           toValue: 1,
           friction: 6,
           tension: 140,
-          useNativeDriver: true,
+          useNativeDriver: Platform.OS !== 'web',
         }),
       ]);
       animation.start();
@@ -123,8 +123,8 @@ function AnimatedTile({
 
     if (isMerged) {
       const animation = Animated.sequence([
-        Animated.timing(scale, { toValue: 1.12, duration: 80, useNativeDriver: true }),
-        Animated.timing(scale, { toValue: 1, duration: 80, useNativeDriver: true }),
+        Animated.timing(scale, { toValue: 1.12, duration: 80, useNativeDriver: Platform.OS !== 'web' }),
+        Animated.timing(scale, { toValue: 1, duration: 80, useNativeDriver: Platform.OS !== 'web' }),
       ]);
       animation.start();
       return () => animation.stop();
@@ -141,13 +141,12 @@ function AnimatedTile({
       toValue: 0,
       duration: 110,
       delay: 30,
-      useNativeDriver: true,
+      useNativeDriver: Platform.OS !== 'web',
     }).start();
   }, [fadeOut, opacity]);
 
   return (
     <Animated.View
-      pointerEvents="none"
       style={[
         styles.tile,
         {
@@ -203,6 +202,7 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     alignItems: 'center',
     justifyContent: 'center',
+    pointerEvents: 'none',
   },
   tileText: {
     fontWeight: '800',
