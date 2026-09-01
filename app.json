@@ -1,0 +1,33 @@
+{
+  "expo": {
+    "name": "2048",
+    "slug": "2048",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#faf8ef"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.prepfinders.game2048"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#edc22e"
+      },
+      "package": "com.prepfinders.game2048",
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "backgroundColor": "#faf8ef"
+    }
+  }
+}
