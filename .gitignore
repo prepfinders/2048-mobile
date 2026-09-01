@@ -8,9 +8,10 @@ node_modules/
 web-build/
 expo-env.d.ts
 
-# Keep the sideload APK in dist/; ignore other export output
+# Keep the sideload APKs in dist/; ignore other export output
 dist/*
 !dist/2048.apk
+!dist/2048-native-android.apk
 
 # Native build intermediates (the android/ and ios/ projects themselves are committed)
 .kotlin/

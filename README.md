@@ -1,8 +1,14 @@
 # 2048
 
-Hybrid iOS / Android 2048 game built with Expo and React Native. Swipe to slide tiles, merge matching numbers, and reach the 2048 tile.
+Classic 4×4 2048 for phones. This repo contains **three** clients that share the same rules and look:
 
-Package id: `com.prepfinders.game2048`
+1. **Expo / React Native** at the repo root (also has generated `android/` and `ios/` for Expo).
+2. **Native Android** (Kotlin, Jetpack Compose) in `native-android/`.
+3. **Native iOS** (SwiftUI) in `native-ios/`.
+
+The Expo app is not replaced by the native apps; they ship side by side.
+
+Package ids: Expo `com.prepfinders.game2048`; native Android and iOS `com.prepfinders.native2048`.
 
 ## Install (JavaScript)
 
@@ -100,6 +106,54 @@ From the repo root you can also run:
 ```bash
 npx expo run:ios
 ```
+
+## Native apps (Kotlin + Swift)
+
+The Expo / React Native app above is unchanged. True native clients live in separate folders so they do not collide with Expo’s generated `android/` and `ios/` trees.
+
+| App | Folder | Package / bundle id | Display name |
+| --- | --- | --- | --- |
+| Expo (React Native) | repo root, `android/`, `ios/` | `com.prepfinders.game2048` | 2048 |
+| Native Android (Kotlin, Jetpack Compose) | `native-android/` | `com.prepfinders.native2048` | 2048 Native |
+| Native iOS (SwiftUI) | `native-ios/` | `com.prepfinders.native2048` | 2048 Native |
+
+Distinct ids are required so the Expo APK and the native APK can both be installed on one phone. Same 2048 rules and cream/gold/orange UI; **no WebView and no Expo runtime** in the native apps.
+
+### Native Android
+
+Open `native-android/` in Android Studio (File → Open → that folder). Let Gradle sync, then Run.
+
+A sideloadable debug-signed ARM release APK is in [`dist/2048-native-android.apk`](dist/2048-native-android.apk):
+
+```bash
+adb install -r dist/2048-native-android.apk
+```
+
+Or copy the file to a phone and allow unknown sources, same as the Expo APK.
+
+Rebuild:
+
+```bash
+cd native-android
+./gradlew assembleRelease
+# output: native-android/app/build/outputs/apk/release/app-release.apk
+```
+
+Unit tests for slide/merge/spawn/undo:
+
+```bash
+cd native-android && ./gradlew test
+```
+
+### Native iOS
+
+No CocoaPods. On a Mac:
+
+```bash
+open native-ios/2048.xcodeproj
+```
+
+Select the **Native2048** scheme, pick an iPhone simulator or a signed device, then Product → Run (⌘R). Set your Team under Signing & Capabilities to run on hardware. Bundle id: `com.prepfinders.native2048`.
 
 ## Play
 

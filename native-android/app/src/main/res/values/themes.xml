@@ -1,0 +1,8 @@
+<resources>
+    <style name="Theme.Native2048" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">#faf8ef</item>
+        <item name="android:navigationBarColor">#faf8ef</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowBackground">#faf8ef</item>
+    </style>
+</resources>
