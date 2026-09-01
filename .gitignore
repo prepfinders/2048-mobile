@@ -5,11 +5,14 @@ node_modules/
 
 # Expo
 .expo/
-dist/
 web-build/
 expo-env.d.ts
 
-# Native
+# Keep the sideload APK in dist/; ignore other export output
+dist/*
+!dist/2048.apk
+
+# Native build intermediates (the android/ and ios/ projects themselves are committed)
 .kotlin/
 *.orig.*
 *.jks
@@ -17,6 +20,26 @@ expo-env.d.ts
 *.p12
 *.key
 *.mobileprovision
+*.keystore
+!**/debug.keystore
+
+android/.gradle/
+android/build/
+android/app/build/
+android/app/.cxx/
+android/local.properties
+android/captures/
+android/.idea/
+android/*.iml
+android/app/*.iml
+
+ios/Pods/
+ios/build/
+ios/DerivedData/
+ios/**/xcuserdata/
+ios/**/*.xcuserstate
+ios/**/DerivedData/
+**/*.xcuserstate
 
 # Metro
 .metro-health-check*
@@ -35,10 +58,6 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
-
-# generated native folders
-/ios
-/android
 
 # tests
 coverage/
