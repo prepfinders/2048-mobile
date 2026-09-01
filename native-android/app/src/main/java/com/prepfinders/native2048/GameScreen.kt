@@ -4,7 +4,9 @@ import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.drag
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -24,15 +26,18 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -151,28 +156,25 @@ private fun Board(
     onKeepPlaying: () -> Unit,
 ) {
     val swipeEnabled = !state.over && !state.showWin
-    var drag by remember { mutableStateOf(Offset.Zero) }
+    val consumeOverscroll = remember {
+        object : NestedScrollConnection {
+            override fun onPostScroll(
+                consumed: Offset,
+                available: Offset,
+                source: NestedScrollSource,
+            ): Offset = available
+        }
+    }
 
     BoxWithConstraints(
         modifier = Modifier
             .fillMaxWidth()
             .aspectRatio(1f)
             .clip(RoundedCornerShape(8.dp))
+            .clipToBounds()
             .background(Palette.grid)
-            .padding(10.dp)
-            .pointerInput(swipeEnabled) {
-                if (!swipeEnabled) return@pointerInput
-                detectDragGestures(
-                    onDragStart = { drag = Offset.Zero },
-                    onDrag = { change, amount ->
-                        change.consume()
-                        drag += amount
-                    },
-                    onDragEnd = {
-                        GameLogic.directionFromDelta(drag.x, drag.y, minDistance = 36f)?.let(onMove)
-                    },
-                )
-            },
+            .nestedScroll(consumeOverscroll)
+            .padding(10.dp),
     ) {
         val gap = 10.dp
         val cell = (minOf(maxWidth, maxHeight) - gap * 3) / 4
@@ -219,6 +221,24 @@ private fun Board(
                     fontWeight = FontWeight.ExtraBold,
                 )
             }
+        }
+
+        if (swipeEnabled) {
+            Box(
+                modifier = Modifier
+                    .matchParentSize()
+                    .pointerInput(onMove) {
+                        awaitEachGesture {
+                            val down = awaitFirstDown(requireUnconsumed = false)
+                            var total = Offset.Zero
+                            drag(down.id) { change ->
+                                total += change.positionChange()
+                                change.consume()
+                            }
+                            GameLogic.directionFromDelta(total.x, total.y, minDistance = 36f)?.let(onMove)
+                        }
+                    },
+            )
         }
 
         if (state.showWin) {
